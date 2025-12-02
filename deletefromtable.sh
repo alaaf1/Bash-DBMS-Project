@@ -28,7 +28,7 @@ zenity --info --text="row with id $id was deleted successfully"
 
 delete_by_column() {
 table="$1"
-columns=$(head n 1 "$meta_file" | tr '|' ' ')
+columns=$(head -n1 "$meta_file" | tr '|' ' ')
 choice=$(zenity --list --title ="columns to choose from:" --column="Column" $columns)
 
 if [[ -z "$choice" ]];
@@ -36,7 +36,7 @@ then
 	zenity --error --text="you have to select a column"
 	return;
 fi
-get_column=$(grep -n "^$choice$" "$meta_file" | cut -d: -f1)
+get_column=$(head -n 1 "$meta_file" | tr '|' '\n' | grep -n "^$choice$" "$meta_file" | awk '{print $1}' )
 value_to_delete=$(zenity --entry --title="deleting" --text="Enter value to delete")
 if [[ -z "$value_to_delete" ]]
 then 
