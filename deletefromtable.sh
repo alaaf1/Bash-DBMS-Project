@@ -33,7 +33,7 @@ choice=$(zenity --list --title ="columns to choose from:" --column="Column" $col
 
 if [[ -z "$choice" ]];
 then
-	zenity --error --text="value should not be empty"
+	zenity --error --text="you have to select a column"
 	return;
 fi
 get_column=$(grep -n "^$choice$" "$table.meta" | cut -d: -f1)
@@ -68,7 +68,7 @@ then
 	zenity --info --text="No Table Found!"
 	exit 0
 fi
-table=$(zenity --list --title="which table to delete from" --column="Tables" $(cat tables.txt)
+table=$(zenity --list --title="which table to delete from" --column="Tables" $(cat tables.txt))
 if [[ -z "$table" ]] 
 then
 	zenity --error --text="please select a table"
@@ -80,17 +80,17 @@ table="${table}.data"
 	
 	case "$choice" in 
 		"Delete by ID") 
-			id=$(zenity --entry --text="Enter ID to delete:")
+#			id=$(zenity --entry --text="Enter ID to delete:")
 			delete_by_id "$table" "$id"
-			zenity --info --text-"Row Deleted successfully"
+		#	zenity --info --text-"Row Deleted successfully"
 			;;
 		"Delete by Column")
 			delete_by_column "$table"
-			zenity --info --text="Row Deleted successfully"
+		#	zenity --info --text="Row Deleted successfully"
 			;;
 		"Delete All Records")
 			delete_all "$table"
-			zenity --info --text="Records deleted successfully"
+		#	zenity --info --text="Records deleted successfully"
 			;;
 		*)
 			zenity --info --text="No Action Taken"
