@@ -22,13 +22,13 @@ then
 	return
 fi
 grep -v "^$id:" "$data_file" > tmp && mv tmp "$data_file"
-zenity --error --text="row with id $id was deleted successfully"
+zenity --info --text="row with id $id was deleted successfully"
 
 }
 
 delete_by_column() {
 table="$1"
-columns=$(cut -d: -f1 "$meta_file")
+columns=$(head n 1 "$meta_file" | tr '|' ' ')
 choice=$(zenity --list --title ="columns to choose from:" --column="Column" $columns)
 
 if [[ -z "$choice" ]];
@@ -58,7 +58,8 @@ delete_all() {
 
 if zenity --question --text="you sure you want to delete all records in '$data_file'?"
 then
-head -n 1 "$data_file" >tmp && mv tmp "$data_file"
+#head -n 1 "$data_file" >tmp && mv tmp
+> "$data_file"
 zenity --info --text="All records were deleted successfully except column names"
 fi
 }
@@ -68,8 +69,8 @@ then
 	zenity --info --text="No Table Found!"
 	exit 0
 fi
-table_chosen=$(zenity --list --title="which table to delete from" --column="Tables" $(cat tables.txt))
-if [[ -z "$table_chosen" ]] 
+table=$(zenity --list --title="which table to delete from" --column="Tables" $(cat tables.txt))
+if [[ -z "$table" ]] 
 then
 	zenity --error --text="please select a table"
 fi
