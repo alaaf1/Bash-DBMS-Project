@@ -5,7 +5,7 @@ result=$(list_tables)
 
 delete_by_id() {
 	table="$1"
-	id=($zenity --entry --title="Deleted by ID" --text="Enter ID to delete:")
+	id=$(zenity --entry --title="Deleted by ID" --text="Enter ID to delete:")
 if [[ -z "$id" ]];
 then 
 	zenity --error --text="ID connot by empty"
@@ -21,7 +21,7 @@ then
 	zenity --error --text="id doesnt exist in the table"
 	return
 fi
-grep -v "^$id:" "$table" > tmp && tmp "$table"
+grep -v "^$id:" "$table" > tmp && mv tmp "$table"
 zenity --error --text="row with id $id was deleted successfully"
 
 }
@@ -33,7 +33,7 @@ choice=$(zenity --list --title ="columns to choose from:" --column="Column" $col
 
 if [[ -z "$choice" ]];
 then
-	zenity -error --text="value should not be empty"
+	zenity --error --text="value should not be empty"
 	return;
 fi
 get_column=$(grep -n "^$choice$" "$table.meta" | cut -d: -f1)
@@ -43,9 +43,9 @@ then
 	zenity --error --text="value should not be empty"
 	return
 fi
-if !awk -F":" -v col="$get_column" -v val="$value_to_delete" '$col == val {found=1} END {exit !found}' "$table"
+if ! awk -F":" -v col="$get_column" -v val="$value_to_delete" '$col == val {found=1} END {exit !found}' "$table"
 then
-zenity --errror --text="not found"
+zenity --error --text="not found"
 return
 fi
 	awk -F":" -v col="$get_column" -v val="$value_to_delete" '$col != val' "$table" > tmp && mv tmp "$table"
@@ -58,7 +58,7 @@ delete_all() {
 
 if zenity --question --text="you sure you want to delete all records in '$table'?"
 then
-head -n -1 $table > tmp && mv tmp "$table"
+head -n 1 "$table" >tmp && mv tmp "$table"
 zenity --info --text="All records were deleted successfully except column names"
 fi
 }
@@ -68,7 +68,7 @@ then
 	zenity --info --text="No Table Found!"
 	exit 0
 fi
-table=$(zenity --list --title="which table to delete from" --column="Tables" $result)
+table=$(zenity --list --title="which table to delete from" --column="Tables" $(cat tables.txt)
 if [[ -z "$table" ]] 
 then
 	zenity --error --text="please select a table"
@@ -82,7 +82,7 @@ table="${table}.data"
 		"Delete by ID") 
 			id=$(zenity --entry --text="Enter ID to delete:")
 			delete_by_id "$table" "$id"
-			zenity -info --text-"Row Deleted successfully"
+			zenity --info --text-"Row Deleted successfully"
 			;;
 		"Delete by Column")
 			delete_by_column "$table"
