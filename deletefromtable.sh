@@ -66,13 +66,15 @@ fi
 if [[ $result -eq 0 ]];
 then 
 	zenity --info --text="No Table Found!"
-	exit
+	exit 0
 fi
 table=$(zenity --list --title="which table to delete from" --column="Tables" $result)
 if [[ -z "$table" ]] 
 then
 	zenity --error --text="please select a table"
 fi
+
+table="${table}.data"
 
 	choice=$(zenity --list --title="Delete from Table" --column="Options" "Delete by ID" "Delete by Column" "Delete All Records")
 	
@@ -94,6 +96,6 @@ fi
 			zenity --info --text="No Action Taken"
 			;;
 	esac
-fi
+
 
 
