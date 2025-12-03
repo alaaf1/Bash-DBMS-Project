@@ -44,11 +44,12 @@ then
 fi
 column_no=$(echo "$columns" | tr '|' '\n' | grep -n "^$choice$" | cut -d: -f1)
 column_data_type=$(echo "$data_types" | cut -d'|' -f"$column_no")
-row=$(zenity --list --title="Available Rows to chooses from" 
---text="Rows in the table named: $table (Column: $choice)"
---column="Row Number - Value" $(awk -F '|' -v col="$column_no" '{ print NR " -
-" $col }' "$data_file"))
-
+row=$(zenity --list \
+    --title="Available Rows to choose from" \
+    --text="Rows in the table named: $table (Column: $choice)" \
+    --column="Row Number - Value" \
+    $(awk -F '|' -v col="$column_no" '{ print NR " - " $col }' "$data_file")
+)
 if [ $? -ne 0 ] || [ -z "$row" ]
 then
 	exit 0
